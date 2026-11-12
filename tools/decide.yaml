@@ -24,8 +24,8 @@ description:
     criteria optionally {true: description, false: description}) or
     "score" (ordered grading; criteria is an array of level descriptions,
     lowest first), plus an optional "instructions" string describing what
-    to ask. Example: {"team": {"type": "choice", "criteria": {"refund":
-    "refund request", "logistics": "logistics issue"}}, "urgent": {"type":
+    to ask. Example: {"team": {"type": "choice", "criteria": {"technical":
+    "technical issue", "logistics": "logistics issue"}}, "urgent": {"type":
     "noul"}, "severity": {"type": "score", "criteria": ["minor", "normal",
     "critical"]}}. The answers come back keyed by the same ids with the
     chosen option, confidence and full option probabilities. Billed by

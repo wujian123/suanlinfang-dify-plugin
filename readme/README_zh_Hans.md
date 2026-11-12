@@ -4,6 +4,16 @@
 基于[算邻坊](https://suanlinfang.cn) API。一个提供者、十一个工具，
 需要您自己的算邻坊 API Key。
 
+源码仓库：<https://github.com/wujian123/suanlinfang-dify-plugin>
+
+## 连接要求
+
+- 算邻坊账户与 API Key（在
+  [suanlinfang.cn](https://suanlinfang.cn/consume-web/api-keys.html) 创建；
+  新注册账户赠送 ¥10 体验金）。
+- Dify 插件运行时可访问 `https://suanlinfang.cn`（全部 API 调用）与
+  运行时签发的 `*.aliyuncs.com` 对象存储地址（大文件上传与结果下载）。
+
 ## 功能
 
 - **语音识别**：短音频（≤3 分钟 / 20MB）同步返回；长音频任务最长 2 小时 /

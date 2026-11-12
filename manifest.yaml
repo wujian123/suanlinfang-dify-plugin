@@ -17,6 +17,8 @@ description:
     新注册账户赠送 ¥10 体验金。
 created_at: "2026-11-12T00:00:00Z"
 icon: icon.png
+repo: https://github.com/wujian123/suanlinfang-dify-plugin
+contact: wjlcuky@gmail.com
 resource:
   memory: 268435456
   permission:

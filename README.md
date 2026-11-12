@@ -5,6 +5,17 @@ Speech-to-text, text-to-speech, image OCR and typed decision-making for
 [SuanLinFang](https://suanlinfang.cn) API. One provider, eleven tools,
 bring your own SuanLinFang API key.
 
+Source repository: <https://github.com/wujian123/suanlinfang-dify-plugin>
+
+## Connection requirements
+
+- A SuanLinFang account and API key (create one at
+  [suanlinfang.cn](https://suanlinfang.cn/consume-web/api-keys.html);
+  new accounts get a CNY 10 trial credit).
+- Outbound access from the Dify plugin runtime to `https://suanlinfang.cn`
+  (all API calls) and presigned `*.aliyuncs.com` object-storage URLs
+  (large-file uploads and result downloads).
+
 ## Features
 
 - **Speech-to-text** — short audio (≤3 min / 20MB) synchronously; long
