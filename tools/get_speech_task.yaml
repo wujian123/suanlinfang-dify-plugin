@@ -1,0 +1,59 @@
+identity:
+  name: get_speech_task
+  author: wujian123
+  label:
+    en_US: Get Speech Task
+    zh_Hans: 查询合成任务
+description:
+  human:
+    en_US: >-
+      Query a long-text speech synthesis task. On success resultUrl is a
+      presigned download link for the complete audio, valid for 1 hour
+      (re-querying after expiry issues a fresh link). Terminal states are
+      kept for 72 hours.
+    zh_Hans: >-
+      查询长文本语音合成任务状态。success 时 resultUrl 为完整音频下载链接
+      （1 小时内有效，过期重查即换新链）。任务终态保留 72 小时。
+  llm: >-
+    Query the status of a long-text speech synthesis task submitted with
+    submit_speech_task. status is queued/running (watch doneUnits/totalUnits),
+    success (resultUrl is a presigned download link for the complete audio,
+    valid for 1 hour; re-query to get a fresh link after expiry), or failed
+    (errorMsg holds the reason). Terminal states are kept for 72 hours.
+extra:
+  python:
+    source: tools/get_speech_task.py
+parameters:
+  - name: task_no
+    type: string
+    required: true
+    form: llm
+    label:
+      en_US: Task No
+      zh_Hans: 任务编号
+    human_description:
+      en_US: taskNo returned by submit_speech_task.
+      zh_Hans: submit_speech_task 返回的 taskNo。
+    llm_description: The taskNo returned by submit_speech_task.
+output_schema:
+  type: object
+  properties:
+    status:
+      type: string
+      description: queued / running / success / failed.
+    totalUnits:
+      type: number
+      nullable: true
+      description: Total text blocks.
+    doneUnits:
+      type: number
+      nullable: true
+      description: Completed text blocks.
+    resultUrl:
+      type: string
+      nullable: true
+      description: Presigned complete-audio download URL on success.
+    errorMsg:
+      type: string
+      nullable: true
+      description: Failure reason when status is failed.

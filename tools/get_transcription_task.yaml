@@ -1,0 +1,60 @@
+identity:
+  name: get_transcription_task
+  author: wujian123
+  label:
+    en_US: Get Transcription Task
+    zh_Hans: 查询转写任务
+description:
+  human:
+    en_US: >-
+      Query a long-audio transcription task. On success the full transcript
+      text is included. Terminal states are kept for 72 hours.
+    zh_Hans: >-
+      查询长音频转写任务状态。success 时附全文转写文本。任务终态保留 72 小时。
+  llm: >-
+    Query the status of a long-audio transcription task submitted with
+    submit_transcription_task. status is queued/running (in progress, watch
+    doneUnits/totalUnits), success (text holds the full transcript), or
+    failed (errorMsg holds the reason). Terminal states are kept for 72
+    hours. Poll every 10-30 seconds.
+extra:
+  python:
+    source: tools/get_transcription_task.py
+parameters:
+  - name: task_no
+    type: string
+    required: true
+    form: llm
+    label:
+      en_US: Task No
+      zh_Hans: 任务编号
+    human_description:
+      en_US: taskNo returned by submit_transcription_task.
+      zh_Hans: submit_transcription_task 返回的 taskNo。
+    llm_description: The taskNo returned by submit_transcription_task.
+output_schema:
+  type: object
+  properties:
+    status:
+      type: string
+      description: queued / running / success / failed.
+    totalUnits:
+      type: number
+      nullable: true
+      description: Total audio segments.
+    doneUnits:
+      type: number
+      nullable: true
+      description: Completed audio segments.
+    text:
+      type: string
+      nullable: true
+      description: Full transcript on success.
+    resultUrl:
+      type: string
+      nullable: true
+      description: Presigned result.json URL.
+    errorMsg:
+      type: string
+      nullable: true
+      description: Failure reason when status is failed.

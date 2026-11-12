@@ -1,0 +1,58 @@
+identity:
+  author: wujian123
+  name: suanlinfang
+  label:
+    en_US: SuanLinFang AI Capabilities
+    zh_Hans: 算邻坊 AI 能力
+  description:
+    en_US: >-
+      Speech-to-text (auto language detection for Mandarin, English and 22
+      Chinese dialects, hotword biasing, long-audio tasks up to 2 hours),
+      text-to-speech (multi-voice, long-text tasks up to 200k characters),
+      image OCR (standard/accurate tiers with custom prompts, PDF document
+      tasks) and typed decision-making with calibrated probabilities, backed
+      by the suanlinfang.cn API. Bring your own SuanLinFang API key.
+    zh_Hans: >-
+      算邻坊（suanlinfang.cn）AI 能力：语音识别（普通话/英语/22 种中文方言自动检测、
+      热词纠错、最长 2 小时长音频任务）、语音合成（多音色、最长 20 万字长文本任务）、
+      图片文字识别（标准/精准双档+自定义识别指令、PDF 文档任务）、类型化智能决策
+      （校准概率输出）。需要您自己的算邻坊 API Key。
+  icon: icon.png
+  tags:
+    - utilities
+    - productivity
+credentials_for_provider:
+  api_key:
+    type: secret-input
+    required: true
+    label:
+      en_US: SuanLinFang API Key
+      zh_Hans: 算邻坊 API Key
+    placeholder:
+      en_US: Paste your SuanLinFang API key (nk-...)
+      zh_Hans: 粘贴你的算邻坊 API Key（nk-...）
+    help:
+      en_US: >-
+        Create an API key at suanlinfang.cn (new accounts get a CNY 10 trial
+        credit), then paste it here. Each Dify workspace uses its own key;
+        this plugin ships with no default key and the SuanLinFang team never
+        sees your key.
+      zh_Hans: >-
+        在 suanlinfang.cn 注册并创建 API Key（新账户赠送 ¥10 体验金），然后粘贴到此处。
+        每个 Dify 工作区使用自己的 Key；本插件不附带默认 Key，算邻坊团队也不会看到你的 Key。
+    url: https://suanlinfang.cn/consume-web/api-keys.html
+tools:
+  - tools/transcribe_audio.yaml
+  - tools/submit_transcription_task.yaml
+  - tools/get_transcription_task.yaml
+  - tools/synthesize_speech.yaml
+  - tools/submit_speech_task.yaml
+  - tools/get_speech_task.yaml
+  - tools/list_tts_voices.yaml
+  - tools/recognize_image.yaml
+  - tools/submit_document_task.yaml
+  - tools/get_document_task.yaml
+  - tools/decide.yaml
+extra:
+  python:
+    source: provider/suanlinfang.py

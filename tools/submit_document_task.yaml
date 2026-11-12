@@ -1,0 +1,95 @@
+identity:
+  name: submit_document_task
+  author: wujian123
+  label:
+    en_US: Submit Document Task
+    zh_Hans: 提交 PDF 文档识别任务
+description:
+  human:
+    en_US: >-
+      Submit a PDF document OCR task (public URL, up to 200MB / 500 pages,
+      recognized page by page). Suitable for scanned contracts, books and
+      reports. Poll with get_document_task.
+    zh_Hans: >-
+      提交 PDF 文档识别任务（公网 URL，≤200MB、≤500 页，逐页识别整本）。
+      适合扫描合同/书籍/报告。提交后用 get_document_task 轮询结果。
+  llm: >-
+    Submit an asynchronous OCR task for a PDF document (public URL, up to
+    200MB / 500 pages) such as scanned contracts, books or reports; every
+    page is recognized and aggregated. Returns a taskNo immediately; poll
+    with get_document_task every 10-30 seconds. prompt is a custom
+    recognition instruction (accurate tier only, up to 2000 chars).
+    Billed per page. Single images should use recognize_image instead.
+extra:
+  python:
+    source: tools/submit_document_task.py
+parameters:
+  - name: document_url
+    type: string
+    required: true
+    form: llm
+    label:
+      en_US: Document URL
+      zh_Hans: 文档 URL
+    human_description:
+      en_US: Public URL of the PDF file (<=200MB, <=500 pages).
+      zh_Hans: PDF 文件的公网 URL（≤200MB、≤500 页）。
+    llm_description: Public URL of the PDF document to recognize.
+  - name: tier
+    type: select
+    required: true
+    form: llm
+    default: standard
+    options:
+      - value: standard
+        label:
+          en_US: Standard
+          zh_Hans: 标准档
+      - value: accurate
+        label:
+          en_US: Accurate
+          zh_Hans: 精准档
+    label:
+      en_US: Tier
+      zh_Hans: 识别档位
+    human_description:
+      en_US: standard for clean scans; accurate for complex layouts.
+      zh_Hans: standard 快速；accurate 适合复杂版面。
+    llm_description: >-
+      Recognition tier: "standard" (fast, clean scans) or "accurate"
+      (complex layouts).
+  - name: prompt
+    type: string
+    required: false
+    form: llm
+    label:
+      en_US: Prompt
+      zh_Hans: 自定义指令
+    human_description:
+      en_US: Custom recognition instruction, accurate tier only, <=2000 chars.
+      zh_Hans: 自定义识别指令（仅精准档生效，≤2000 字符）。
+    llm_description: >-
+      Optional custom recognition instruction (accurate tier only, up to
+      2000 chars).
+  - name: file_name
+    type: string
+    required: false
+    form: llm
+    label:
+      en_US: File Name
+      zh_Hans: 文件名
+    human_description:
+      en_US: Override file name when the URL has no/bad extension.
+      zh_Hans: 当 URL 无扩展名或扩展名错误时，显式指定文件名（.pdf 结尾）。
+    llm_description: >-
+      Optional file name ending with .pdf to use when the URL path has no
+      or wrong extension.
+output_schema:
+  type: object
+  properties:
+    taskNo:
+      type: string
+      description: Task id, poll with get_document_task.
+    hint:
+      type: string
+      description: Polling hint.

@@ -1,0 +1,79 @@
+identity:
+  name: transcribe_audio
+  author: wujian123
+  label:
+    en_US: Transcribe Audio
+    zh_Hans: 语音识别（短音频）
+description:
+  human:
+    en_US: >-
+      Transcribe a short audio file (public URL) to text. For recordings up
+      to 3 minutes / 20MB; returns the full transcript synchronously.
+    zh_Hans: >-
+      把一段短音频（公网 URL）转成文字。适用于 ≤3 分钟、≤20MB 的录音/语音消息，
+      同步秒级返回全文纯文本（不含时间戳）。
+  llm: >-
+    Transcribe a short audio recording (public URL, up to 3 minutes / 20MB)
+    to text. Returns the full transcript as plain text without timestamps.
+    For longer audio use submit_transcription_task instead. Leave language
+    empty for auto-detection (Mandarin, English and 22 Chinese dialects);
+    set a language code like "zh" or "en" to pin it. Pass hotwords in
+    context (comma-separated names, terms or brands, e.g. attendee names
+    for a meeting) so proper nouns are transcribed as written. Billed by
+    actual audio duration (about CNY 0.5 per hour, per-second precision);
+    failed requests are not billed.
+extra:
+  python:
+    source: tools/transcribe_audio.py
+parameters:
+  - name: audio_url
+    type: string
+    required: true
+    form: llm
+    label:
+      en_US: Audio URL
+      zh_Hans: 音频 URL
+    human_description:
+      en_US: Public URL of the audio file (wav/mp3/flac/m4a/ogg/aac).
+      zh_Hans: 音频文件的公网 URL（wav/mp3/flac/m4a/ogg/aac）。
+    llm_description: Public URL of the audio file to transcribe.
+  - name: language
+    type: string
+    required: false
+    form: llm
+    label:
+      en_US: Language
+      zh_Hans: 语种
+    human_description:
+      en_US: Leave empty for auto-detection; or a language code like zh, en.
+      zh_Hans: 留空自动检测；或用语种代码（如 zh、en）。
+    llm_description: >-
+      Optional language code (e.g. "zh", "en") to pin the transcription
+      language; omit or leave empty for auto-detection.
+  - name: context
+    type: string
+    required: false
+    form: llm
+    label:
+      en_US: Hotwords
+      zh_Hans: 热词
+    human_description:
+      en_US: Comma-separated names, terms or brands to bias proper nouns.
+      zh_Hans: 逗号分隔的热词（人名、术语、品牌），专有名词按所列写法优先转写。
+    llm_description: >-
+      Optional comma-separated hotwords (person names, terms, brand names).
+      Proper nouns listed here are transcribed with priority using the given
+      spelling; recommended for meetings (attendee names).
+output_schema:
+  type: object
+  properties:
+    text:
+      type: string
+      description: Full transcript as plain text, no timestamps.
+    durationMs:
+      type: number
+      nullable: true
+      description: Actual audio duration in milliseconds.
+    inferenceId:
+      type: string
+      description: Inference record id for tracing/billing lookup.

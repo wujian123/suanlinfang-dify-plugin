@@ -1,0 +1,85 @@
+identity:
+  name: synthesize_speech
+  author: wujian123
+  label:
+    en_US: Synthesize Speech
+    zh_Hans: 语音合成（短文本）
+description:
+  human:
+    en_US: >-
+      Synthesize text to speech (up to 3000 UTF-8 bytes, ~1000 Chinese
+      characters) and return a presigned download URL valid for 1 hour.
+    zh_Hans: >-
+      把文本合成为语音（≤3000 UTF-8 字节，约 1000 汉字），同步返回现签下载链接
+      （GET 即得音频，1 小时内有效）。
+  llm: >-
+    Synthesize text into speech and return a presigned download URL (GET the
+    URL to obtain the audio file, valid for 1 hour). For text up to 3000
+    UTF-8 bytes (about 1000 Chinese characters); use submit_speech_task for
+    longer text. Remind the user to download promptly — after the URL
+    expires the text must be synthesized again (billed again). Look up the
+    speaker voice code with list_tts_voices first. Billed at about CNY 2 per
+    10,000 characters; failed requests are not billed.
+extra:
+  python:
+    source: tools/synthesize_speech.py
+parameters:
+  - name: text
+    type: string
+    required: true
+    form: llm
+    label:
+      en_US: Text
+      zh_Hans: 合成文本
+    human_description:
+      en_US: Text to synthesize (<=3000 UTF-8 bytes, ~1000 Chinese characters).
+      zh_Hans: 要合成的文本（≤3000 UTF-8 字节，约 1000 汉字）。
+    llm_description: The text to convert to speech.
+  - name: speaker
+    type: string
+    required: false
+    form: llm
+    default: default
+    label:
+      en_US: Speaker
+      zh_Hans: 音色
+    human_description:
+      en_US: Voice code from list_tts_voices; default for the standard voice.
+      zh_Hans: 音色代码，先用 list_tts_voices 查询；default 为标准音色。
+    llm_description: >-
+      Optional voice code (speaker) to use; call list_tts_voices first to
+      see available voices. Defaults to "default".
+  - name: audio_format
+    type: select
+    required: false
+    form: llm
+    default: wav
+    options:
+      - value: wav
+        label:
+          en_US: WAV
+          zh_Hans: WAV
+      - value: mp3
+        label:
+          en_US: MP3
+          zh_Hans: MP3
+    label:
+      en_US: Audio Format
+      zh_Hans: 音频格式
+    human_description:
+      en_US: Output audio format, wav by default.
+      zh_Hans: 输出音频格式，默认 wav。
+    llm_description: Output audio format, "wav" (default) or "mp3".
+output_schema:
+  type: object
+  properties:
+    url:
+      type: string
+      description: Presigned audio download URL, valid for 1 hour.
+    durationMs:
+      type: number
+      nullable: true
+      description: Synthesized audio duration in milliseconds.
+    inferenceId:
+      type: string
+      description: Inference record id for tracing/billing lookup.

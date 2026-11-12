@@ -1,0 +1,47 @@
+version: 0.0.1
+type: plugin
+author: wujian123
+name: suanlinfang
+label:
+  en_US: SuanLinFang AI Capabilities
+  zh_Hans: 算邻坊 AI 能力
+description:
+  en_US: >-
+    Speech-to-text (long-audio tasks with hotwords), text-to-speech,
+    image OCR (standard/accurate tiers), and typed decision-making APIs
+    from suanlinfang.cn. Bring your own SuanLinFang API key; new accounts
+    get a CNY 10 trial credit.
+  zh_Hans: >-
+    算邻坊（suanlinfang.cn）语音识别（长音频任务+热词纠错）、语音合成（多音色）、
+    图片文字识别（标准/精准双档）与类型化智能决策 API。需要您自己的算邻坊 API Key，
+    新注册账户赠送 ¥10 体验金。
+created_at: "2026-11-12T00:00:00Z"
+icon: icon.png
+resource:
+  memory: 268435456
+  permission:
+    tool:
+      enabled: true
+    model:
+      enabled: false
+plugins:
+  tools:
+    - provider/suanlinfang.yaml
+privacy: PRIVACY.md
+network:
+  domains:
+    - suanlinfang.cn
+    - "*.aliyuncs.com"
+tags:
+  - utilities
+  - productivity
+meta:
+  version: 0.0.1
+  arch:
+    - amd64
+    - arm64
+  runner:
+    language: python
+    version: "3.12"
+    entrypoint: main
+  minimum_dify_version: "0.5.0"

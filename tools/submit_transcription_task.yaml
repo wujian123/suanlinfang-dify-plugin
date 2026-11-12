@@ -1,0 +1,89 @@
+identity:
+  name: submit_transcription_task
+  author: wujian123
+  label:
+    en_US: Submit Transcription Task
+    zh_Hans: 提交长音频转写任务
+description:
+  human:
+    en_US: >-
+      Submit a long-audio transcription task (public URL, up to 2 hours /
+      500MB). The file is downloaded, chunked into 180s segments,
+      transcribed and stitched into a full transcript. Poll with
+      get_transcription_task.
+    zh_Hans: >-
+      提交长音频转写任务（公网 URL，最长 2 小时、≤500MB，wav/mp3/flac/m4a/ogg/aac）。
+      平台自动按 180 秒切段逐段转写并拼接全文（纯文本，不含时间戳）。
+      提交后用 get_transcription_task 轮询结果。
+  llm: >-
+    Submit an asynchronous transcription task for a long audio file (public
+    URL, up to 2 hours / 500MB, wav/mp3/flac/m4a/ogg/aac) such as meetings,
+    podcasts or lectures. The service chunks the audio into 180-second
+    segments, transcribes each and stitches a full plain-text transcript.
+    Returns a taskNo immediately; poll with get_transcription_task (every
+    10-30 seconds; total time is roughly 1/6 to 1/4 of the audio duration).
+    Language auto-detected when empty; hotwords in context apply to all
+    segments. Billed by actual duration (about CNY 0.5 per hour); tasks are
+    rejected if the account balance is insufficient.
+extra:
+  python:
+    source: tools/submit_transcription_task.py
+parameters:
+  - name: audio_url
+    type: string
+    required: true
+    form: llm
+    label:
+      en_US: Audio URL
+      zh_Hans: 音频 URL
+    human_description:
+      en_US: Public URL of the long audio file (wav/mp3/flac/m4a/ogg/aac).
+      zh_Hans: 长音频文件的公网 URL（wav/mp3/flac/m4a/ogg/aac）。
+    llm_description: Public URL of the long audio file to transcribe.
+  - name: language
+    type: string
+    required: false
+    form: llm
+    label:
+      en_US: Language
+      zh_Hans: 语种
+    human_description:
+      en_US: Leave empty for auto-detection; or a language code like zh, en.
+      zh_Hans: 留空自动检测；或用语种代码（如 zh、en）。
+    llm_description: >-
+      Optional language code (e.g. "zh", "en"); omit for auto-detection.
+  - name: context
+    type: string
+    required: false
+    form: llm
+    label:
+      en_US: Hotwords
+      zh_Hans: 热词
+    human_description:
+      en_US: Comma-separated names, terms or brands; applies to all segments.
+      zh_Hans: 逗号分隔的热词（人名、术语、品牌），对全部音频段生效。
+    llm_description: >-
+      Optional comma-separated hotwords (names, terms, brands) applied to
+      every segment of the audio.
+  - name: file_name
+    type: string
+    required: false
+    form: llm
+    label:
+      en_US: File Name
+      zh_Hans: 文件名
+    human_description:
+      en_US: Override file name when the URL has no/bad extension.
+      zh_Hans: 当 URL 无扩展名或扩展名错误时，显式指定文件名（含扩展名）。
+    llm_description: >-
+      Optional file name with extension (e.g. "meeting.mp3") to use when the
+      URL path has no or wrong extension; required for extension-less URLs.
+output_schema:
+  type: object
+  properties:
+    taskNo:
+      type: string
+      description: Task id, poll with get_transcription_task.
+    hint:
+      type: string
+      description: Polling hint.

@@ -1,0 +1,91 @@
+identity:
+  name: recognize_image
+  author: wujian123
+  label:
+    en_US: Recognize Image
+    zh_Hans: 图片文字识别
+description:
+  human:
+    en_US: >-
+      OCR a single image (public URL, png/jpg/webp/bmp, up to 20MB),
+      returning line-by-line text. standard tier for clean prints and
+      screenshots; accurate tier for tables, multi-column layouts or tilted
+      photos, with an optional custom prompt.
+    zh_Hans: >-
+      识别图片中的文字（png/jpg/webp/bmp，≤20MB，公网 URL），同步返回逐行文本。
+      tier：standard 标准档（清晰打印件/截图）；accurate 精准档（表格、多栏、
+      倾斜拍摄等复杂版面，prompt 自定义识别指令生效）。
+  llm: >-
+    Recognize text in a single image (public URL, png/jpg/webp/bmp, up to
+    20MB) and return line-by-line text. Use tier "standard" for clean
+    printed documents and screenshots; use tier "accurate" for complex
+    layouts (tables, multi-column, tilted photos) — with the accurate tier
+    you may pass prompt (up to 2000 chars) as a custom recognition
+    instruction such as "extract only the amount column of the table".
+    Billed per page (a single image is one page, about CNY 0.005-0.015).
+extra:
+  python:
+    source: tools/recognize_image.py
+parameters:
+  - name: image_url
+    type: string
+    required: true
+    form: llm
+    label:
+      en_US: Image URL
+      zh_Hans: 图片 URL
+    human_description:
+      en_US: Public URL of the image (png/jpg/webp/bmp, <=20MB).
+      zh_Hans: 图片的公网 URL（png/jpg/webp/bmp，≤20MB）。
+    llm_description: Public URL of the image to recognize.
+  - name: tier
+    type: select
+    required: true
+    form: llm
+    default: standard
+    options:
+      - value: standard
+        label:
+          en_US: Standard
+          zh_Hans: 标准档
+      - value: accurate
+        label:
+          en_US: Accurate
+          zh_Hans: 精准档
+    label:
+      en_US: Tier
+      zh_Hans: 识别档位
+    human_description:
+      en_US: standard for clean prints/screenshots; accurate for complex layouts.
+      zh_Hans: standard 快速；accurate 适合表格/多栏/倾斜等复杂版面。
+    llm_description: >-
+      Recognition tier: "standard" (fast, clean prints and screenshots) or
+      "accurate" (complex layouts: tables, multi-column, tilted photos).
+  - name: prompt
+    type: string
+    required: false
+    form: llm
+    label:
+      en_US: Prompt
+      zh_Hans: 自定义指令
+    human_description:
+      en_US: Custom recognition instruction, accurate tier only, <=2000 chars.
+      zh_Hans: 自定义识别指令（仅精准档生效，≤2000 字符），如「只提取表格金额列」。
+    llm_description: >-
+      Optional custom recognition instruction (accurate tier only, up to
+      2000 chars), e.g. "extract only the amount column of the table".
+      Omit to recognize all text.
+output_schema:
+  type: object
+  properties:
+    logId:
+      type: string
+      description: Recognition log id for tracing.
+    words:
+      type: array
+      description: Recognized text, one entry per line.
+      items:
+        type: string
+    wordsResultNum:
+      type: number
+      description: Number of recognized lines.

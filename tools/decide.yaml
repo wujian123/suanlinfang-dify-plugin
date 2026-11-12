@@ -1,0 +1,79 @@
+identity:
+  name: decide
+  author: wujian123
+  label:
+    en_US: Decide
+    zh_Hans: 智能决策
+description:
+  human:
+    en_US: >-
+      Typed decision-making (System One): input a business state and 1-32
+      typed questions, get calibrated probabilities per question — no
+      generated text. For ticket triage, risk checks, quality grading.
+    zh_Hans: >-
+      类型化智能决策（System One 协议）：输入业务状态与 1-32 个类型化问题，
+      返回每题的校准概率，不生成文本。适用工单分类、风控判定、质检评估等
+      结构化判断场景。
+  llm: >-
+    Typed decision-making: pass a business state and 1-32 typed questions,
+    receive a calibrated probability for every question. No free text is
+    generated, no conversation memory — each request is independent.
+    questions must be a JSON object mapping question ids to question
+    definitions, each with type "choice" (single choice; criteria is an
+    object mapping option name to description), "noul" (true/false;
+    criteria optionally {true: description, false: description}) or
+    "score" (ordered grading; criteria is an array of level descriptions,
+    lowest first), plus an optional "instructions" string describing what
+    to ask. Example: {"team": {"type": "choice", "criteria": {"refund":
+    "refund request", "logistics": "logistics issue"}}, "urgent": {"type":
+    "noul"}, "severity": {"type": "score", "criteria": ["minor", "normal",
+    "critical"]}}. The answers come back keyed by the same ids with the
+    chosen option, confidence and full option probabilities. Billed by
+    input tokens (about CNY 2 per million, output free); failed requests
+    are not billed.
+extra:
+  python:
+    source: tools/decide.py
+parameters:
+  - name: state
+    type: string
+    required: true
+    form: llm
+    label:
+      en_US: State
+      zh_Hans: 业务状态
+    human_description:
+      en_US: Business state as free text or JSON.
+      zh_Hans: 业务状态描述，自由文本或 JSON。
+    llm_description: >-
+      The business state to judge — free text or a JSON-serializable
+      description (object, array or plain string) of the current situation.
+  - name: questions
+    type: string
+    required: true
+    form: llm
+    label:
+      en_US: Questions (JSON)
+      zh_Hans: 问题集（JSON）
+    human_description:
+      en_US: JSON object of 1-32 typed questions; see tool description for the shape.
+      zh_Hans: 1-32 题的 JSON 映射（choice/noul/score 三种题型），形状见工具说明。
+    llm_description: >-
+      A JSON object (as a string) mapping question ids (1-32 entries) to
+      question definitions. Each question has "type": "choice" (criteria
+      maps option name to description), "noul" (true/false, criteria
+      optional) or "score" (criteria is an ordered array of level
+      descriptions, lowest first), plus optional "instructions". See the
+      tool description for a full example.
+output_schema:
+  type: object
+  properties:
+    inferenceId:
+      type: string
+      description: Inference record id for tracing/billing lookup.
+    answers:
+      type: object
+      description: Per-question answers keyed by the same question ids.
+    usage:
+      type: object
+      description: Token usage of this request.

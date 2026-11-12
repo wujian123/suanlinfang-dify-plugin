@@ -1,0 +1,45 @@
+identity:
+  name: list_tts_voices
+  author: wujian123
+  label:
+    en_US: List TTS Voices
+    zh_Hans: 音色清单
+description:
+  human:
+    en_US: >-
+      List the currently available text-to-speech voices (code / display
+      name / gender / style tag). Call before synthesizing to pick a
+      speaker.
+    zh_Hans: >-
+      查询语音合成当前可用音色清单（code/name/gender/styleTag）。
+      合成前先看这个选 speaker。
+  llm: >-
+    List the currently available text-to-speech voices. Each entry has code
+    (the speaker parameter value), displayName, gender and styleTag. Call
+    this before synthesize_speech or submit_speech_task to pick a speaker
+    voice.
+extra:
+  python:
+    source: tools/list_tts_voices.py
+parameters: []
+output_schema:
+  type: object
+  properties:
+    voices:
+      type: array
+      description: List of voices (code, displayName, gender, styleTag).
+      items:
+        type: object
+        properties:
+          code:
+            type: string
+            description: Voice code to pass as speaker.
+          displayName:
+            type: string
+            description: Human-readable voice name.
+          gender:
+            type: string
+            description: Voice gender.
+          styleTag:
+            type: string
+            description: Voice style tag.
